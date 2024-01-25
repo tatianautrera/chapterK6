@@ -1,5 +1,4 @@
-import { SharedArray } from 'k6/data';
-import papaparse from 'https://jslib.k6.io/papaparse/5.1.1/index.js';
+
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { petData } from './payloads/payload.js';
@@ -7,6 +6,7 @@ import { Counter } from 'k6/metrics'; //metrica de contador
 import { Gauge } from 'k6/metrics'; //metrica de medidor
 import { Rate } from 'k6/metrics'; //metrica de taxa
 import { Trend } from 'k6/metrics'; //metrica de tendencia
+import { htmlReport } from "https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js";
 
 
 const config = JSON.parse(open("./config/config.json"));
@@ -28,17 +28,14 @@ export const options = {
   }
 };
 
-const petsCsv = new SharedArray('Pets', function () {
-  return papaparse.parse(open('../data/pets.csv'), { header: true, skipEmptyLines: true }).data;
-})
-
 export default () => {
+
   const params = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
-  const body = petData(Math.floor(Math.random() * petsCsv.length));
+  const body = petData();
 
   const url = `${config.baseUrl}/v2/pet`;
   const response = http.post(url, JSON.stringify(body), params);
@@ -53,3 +50,9 @@ export default () => {
 
   sleep(1);
 };
+
+export function handleSummary(data) {
+  return {
+    "Load-Test-report.html": htmlReport(data),
+  };
+}

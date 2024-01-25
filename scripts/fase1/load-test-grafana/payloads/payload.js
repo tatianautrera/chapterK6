@@ -5,13 +5,13 @@ const petsCsv = new SharedArray('Pets', function () {
   return papaparse.parse(open('../data/pets.csv'), { header: true, skipEmptyLines: true }).data;
 })
 
-export const petData = (index)=> ( {
-    "id": petsCsv[index].id,
+export const petData = ()=> ( {
+    "id": petsCsv[Math.floor(Math.random() * petsCsv.length)].id,
     "category": {
-      "id": petsCsv[index].categoryId,
-      "name": petsCsv[index].categoryName
+      "id": petsCsv[Math.floor(Math.random() * petsCsv.length)].categoryId,
+      "name": petsCsv[Math.floor(Math.random() * petsCsv.length)].categoryName
     },
-    "name": petsCsv[index].name,
+    "name": petsCsv[Math.floor(Math.random() * petsCsv.length)].name,
     "photoUrls": [
       "teste"
     ],
@@ -22,4 +22,5 @@ export const petData = (index)=> ( {
       }
     ],
     "status": "available"
+
   });

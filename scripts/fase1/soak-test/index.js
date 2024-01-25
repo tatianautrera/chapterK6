@@ -7,18 +7,18 @@ const config = JSON.parse(open("./config/config.json"));
 
 
 export const options = {
-  stages:[
-    {duration: '2s', target: 40},
-    {duration: '1m', target: 40},
-    {duration: '2s', target: 0},
-   
+  stages: [
+    { duration: '10s', target: 40 },
+    { duration: '1m', target: 40 },
+    { duration: '10s', target: 0 },
+
 
   ],
   thresholds: {
     http_req_failed: ['rate<0.01'],
     checks: ['rate > 0.95'],
     http_req_duration: ['p(95) < 500']
-}
+  }
 };
 
 export default () => {
@@ -28,12 +28,12 @@ export default () => {
       'Content-Type': 'application/json'
     }
   }
-const body = petData();
+  const body = petData();
 
   const url = `${config.baseUrl}/v2/pet`;
-  const response = http.post(url,JSON.stringify(body), params);
+  const response = http.post(url, JSON.stringify(body), params);
 
-  check(response, {'return status 200': (res) => res.status === 200});
+  check(response, { 'return status 200': (res) => res.status === 200 });
   check(response, { 'return less 1 second': (res) => res.timings.duration < 1000 })
   check(response, { 'return name pet': (res) => res.json().name == body.name })
   sleep(1);
